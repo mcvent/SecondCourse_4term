@@ -18,6 +18,17 @@ struct tree {
     }
 };
 tree* root = nullptr; //глобальная переменная для корня
+tree* sibling(tree* X);
+void replace(tree*& tr, tree* X);
+void delete_case1(tree*& tr, tree* X);
+void delete_case2(tree*& tr, tree* X);
+void delete_case3(tree*& tr, tree* X);
+void delete_case4(tree*& tr, tree* X);
+void delete_case5(tree*& tr, tree* X);
+void delete_case6(tree*& tr, tree* X);
+void delete_node(tree*& tr, int value);
+tree* find_max(tree* node);
+tree* find_min(tree* node);
 
 void max_height(tree* node, short& max_depth, short depth = 1) {
     if (depth > max_depth) max_depth = depth;
@@ -185,196 +196,208 @@ tree* search(tree* node, int val) {
         return search(node->right, val);
 }
 
-// Функция для поиска минимального элемента в поддереве
-tree* find_min(tree* node) {
-    while (node->left != nullptr)
-        node = node->left;
-    return node;
+tree* sibling(tree* X) {
+    if (!X || !X->parent) return nullptr;
+    if (X == X->parent->left)
+        return X->parent->right;
+    else
+        return X->parent->left;
 }
 
-// Функция для поиска максимального элемента в поддереве
-tree* find_max(tree* node) {
-    while (node->right != nullptr)
-        node = node->right;
-    return node;
-}
+void replace(tree*& tr, tree* X) {
+    // Алгоритм 18: замена X на его единственного ребенка
+    tree* ch = nullptr;
+    if (X->left && !X->right)
+        ch = X->left;
+    else if (X->right && !X->left)
+        ch = X->right;
+    else return; // нет одного ребенка — не вызываем
 
-// Функция для поиска узла-преемника (следующий по величине)
-tree* find_successor(tree* node) {
-    if (node->right != nullptr)
-        return find_min(node->right);
-
-    tree* parent = node->parent;
-    while (parent != nullptr && node == parent->right) {
-        node = parent;
-        parent = parent->parent;
-    }
-    return parent;
-}
-
-// Функция для замены одного узла другим
-void transplant(tree* u, tree* v) {
-    if (u->parent == nullptr) {
-        root = v;
-    }
-    else if (u == u->parent->left) {
-        u->parent->left = v;
+    ch->parent = X->parent;
+    if (X->parent) {
+        if (X == X->parent->left)
+            X->parent->left = ch;
+        else
+            X->parent->right = ch;
     }
     else {
-        u->parent->right = v;
-    }
-
-    if (v != nullptr) {
-        v->parent = u->parent;
+        tr = ch; // новый корень
     }
 }
 
-// функция для исправления красно-черных свойств после удаления
-void delete_fixup(tree* x, tree* parent) {
-    while (x != root && (x == nullptr || x->color == BLACK)) {
-        if (x == parent->left) {
-            tree* w = parent->right; // брат узла x
+void delete_case1(tree*& tr, tree* X);
+void delete_case2(tree*& tr, tree* X);
+void delete_case3(tree*& tr, tree* X);
+void delete_case4(tree*& tr, tree* X);
+void delete_case5(tree*& tr, tree* X);
+void delete_case6(tree*& tr, tree* X);
 
-            if (w->color == RED) {
-                w->color = BLACK;
-                parent->color = RED;
-                left_rotate(parent);
-                w = parent->right;
-            }
+void delete_case1(tree*& tr, tree* X) {
+    // Алгоритм 12: X — корень
+    if (!X->parent) {
+        if (X->left) tr = X->left;
+        else tr = X->right;
+        if (tr) tr->parent = nullptr;
+        // цвет не важен, корень станет чёрным потом
+    }
+    else {
+        delete_case2(tr, X);
+    }
+}
 
-            if ((w->left == nullptr || w->left->color == BLACK) &&
-                (w->right == nullptr || w->right->color == BLACK)) {
-                w->color = RED;
-                x = parent;
-                parent = parent->parent;
-            }
-            else {
-                if (w->right == nullptr || w->right->color == BLACK) {
-                    if (w->left != nullptr)
-                        w->left->color = BLACK;
-                    w->color = RED;
-                    right_rotate(w);
-                    w = parent->right;
-                }
+void delete_case2(tree*& tr, tree* X) {
+    // Алгоритм 13: брат красный
+    tree* S = sibling(X);
+    if (S && S->color == RED) {
+        X->parent->color = RED;
+        S->color = BLACK;
+        if (X == X->parent->left)
+            left_rotate(X->parent);
+        else
+            right_rotate(X->parent);
+    }
+    delete_case3(tr, X);
+}
 
-                w->color = parent->color;
-                parent->color = BLACK;
-                if (w->right != nullptr)
-                    w->right->color = BLACK;
-                left_rotate(parent);
-                x = root;
-                break;
-            }
+void delete_case3(tree*& tr, tree* X) {
+    // Алгоритм 14: родитель, брат, племянники — чёрные
+    tree* S = sibling(X);
+    bool left_nephew_black = (!S || !S->left || S->left->color == BLACK);
+    bool right_nephew_black = (!S || !S->right || S->right->color == BLACK);
+
+    if ((!X->parent || X->parent->color == BLACK) &&
+        (!S || S->color == BLACK) &&
+        left_nephew_black && right_nephew_black) {
+        if (S) S->color = RED;
+        delete_case1(tr, X->parent ? X->parent : X);
+    }
+    else {
+        delete_case4(tr, X);
+    }
+}
+
+void delete_case4(tree*& tr, tree* X) {
+    // Алгоритм 15: родитель красный, брат и племянники чёрные
+    tree* S = sibling(X);
+    bool left_nephew_black = (!S || !S->left || S->left->color == BLACK);
+    bool right_nephew_black = (!S || !S->right || S->right->color == BLACK);
+
+    if (X->parent && X->parent->color == RED &&
+        S && S->color == BLACK &&
+        left_nephew_black && right_nephew_black) {
+        if (S) S->color = RED;
+        X->parent->color = BLACK;
+    }
+    else {
+        delete_case5(tr, X);
+    }
+}
+
+void delete_case5(tree*& tr, tree* X) {
+    // Алгоритм 16: брат чёрный, "прилежащий" племянник красный
+    tree* S = sibling(X);
+    if (S && S->color == BLACK) {
+        if (X == X->parent->left &&
+            S->left && S->left->color == RED &&
+            (!S->right || S->right->color == BLACK)) {
+            S->color = RED;
+            S->left->color = BLACK;
+            right_rotate(S);
+        }
+        else if (X == X->parent->right &&
+            S->right && S->right->color == RED &&
+            (!S->left || S->left->color == BLACK)) {
+            S->color = RED;
+            S->right->color = BLACK;
+            left_rotate(S);
+        }
+    }
+    delete_case6(tr, X);
+}
+
+void delete_case6(tree*& tr, tree* X) {
+    // Алгоритм 17: брат чёрный, "противоположный" племянник красный
+    tree* S = sibling(X);
+    if (S) {
+        S->color = X->parent->color;
+        X->parent->color = BLACK;
+        if (X == X->parent->left) {
+            if (S->right) S->right->color = BLACK;
+            left_rotate(X->parent);
         }
         else {
-            tree* w = parent->left; // брат узла x
-
-            if (w->color == RED) {
-                w->color = BLACK;
-                parent->color = RED;
-                right_rotate(parent);
-                w = parent->left;
-            }
-
-            if ((w->right == nullptr || w->right->color == BLACK) &&
-                (w->left == nullptr || w->left->color == BLACK)) {
-                w->color = RED;
-                x = parent;
-                parent = parent->parent;
-            }
-            else {
-                if (w->left == nullptr || w->left->color == BLACK) {
-                    if (w->right != nullptr)
-                        w->right->color = BLACK;
-                    w->color = RED;
-                    left_rotate(w);
-                    w = parent->left;
-                }
-
-                w->color = parent->color;
-                parent->color = BLACK;
-                if (w->left != nullptr)
-                    w->left->color = BLACK;
-                right_rotate(parent);
-                x = root;
-                break;
-            }
+            if (S->left) S->left->color = BLACK;
+            right_rotate(X->parent);
         }
     }
-
-    if (x != nullptr)
-        x->color = BLACK;
 }
 
-// функция для удаления узла
-void delete_node(int val) {
-    tree* z = search(root, val);
-    if (z == nullptr) {
-        cout << "Элемент " << val << " не найден" << endl;
+tree* find_max(tree* node) {
+    while (node->right) node = node->right;
+    return node;
+}
+
+tree* find_min(tree* node) {
+    while (node->left) node = node->left;
+    return node;
+}
+
+void delete_node(tree*& tr, int value) {
+    // Алгоритм 19: удаление узла
+    tree* X = search(tr, value);
+    if (!X) return;
+
+    // Случай 1: два ребёнка
+    if (X->left && X->right) {
+        tree* buf;
+        if (X->inf <= tr->inf)
+            buf = find_max(X->left);  // максимум в левом поддереве
+        else
+            buf = find_min(X->right); // минимум в правом поддереве
+
+        // Меняем значения
+        int temp = X->inf;
+        X->inf = buf->inf;
+        buf->inf = temp;
+        X = buf; // теперь удаляем buf
+    }
+    // Случай 2: один ребёнок
+    if ((X->left && !X->right) || (!X->left && X->right)) {
+        tree* ch = X->left ? X->left : X->right;
+        replace(tr, X);
+        if (X->color == BLACK) {
+            if (ch->color == RED)
+                ch->color = BLACK;
+            else
+                delete_case1(tr, ch);
+        }
+        delete X;
         return;
     }
 
-    tree* y = z;
-    tree* x;
-    bool y_original_color = y->color;
-
-    // нет левого потомка
-    if (z->left == nullptr) {
-        x = z->right;
-        transplant(z, z->right);
-    }
-    // нет правого потомка
-    else if (z->right == nullptr) {
-        x = z->left;
-        transplant(z, z->left);
-    }
-    // есть оба потомка
-    else {
-        y = find_min(z->right); // находим минимальный в правом поддереве
-        y_original_color = y->color;
-        x = y->right;
-
-        if (y->parent == z) {
-            if (x != nullptr)
-                x->parent = y;
+    // Случай 3: нет детей
+    if (!X->left && !X->right) {
+        if (X->color == BLACK) {
+            delete_case1(tr, X);
+        }
+        // Удаляем ссылку у родителя
+        if (X->parent) {
+            if (X == X->parent->left)
+                X->parent->left = nullptr;
+            else
+                X->parent->right = nullptr;
         }
         else {
-            transplant(y, y->right);
-            y->right = z->right;
-            y->right->parent = y;
+            tr = nullptr; // дерево стало пустым
         }
-
-        transplant(z, y);
-        y->left = z->left;
-        y->left->parent = y;
-        y->color = z->color;
+        delete X;
     }
-
-    delete z;
-
-    //если удалили черный узел, нужно исправить дерево
-    if (y_original_color == BLACK) {
-        if (x != nullptr) {
-            delete_fixup(x, x->parent);
-        }
-        else {
-            //создаем временный лист для исправления
-            tree* nil = new tree(-1, BLACK);
-            nil->parent = x ? x->parent : nullptr;
-            delete_fixup(nil, nil->parent);
-            delete nil;
-        }
-    }
-
-    if (root != nullptr)
-        root->color = BLACK;
 }
 
 int main() {
     setlocale(LC_ALL, "RU");
-
     //вставка элементов в дерево
-    vector<int> nums = { 8, 3, 10, 1, 6, 14, 4, 7, 13 };
+    vector<int> nums = { 18, 45, 30, 15,20,25,28,27,26,32,33,35 };
     for (int num : nums) {
         insert(num);
     }
@@ -383,14 +406,13 @@ int main() {
     print();
     cout << "\n\n\n";
 
-    // Демонстрация удаления
-    cout << "Удаляем элемент 6:" << endl;
-    delete_node(6);
+    cout << "Удаляем элемент 18:" << endl;
+    delete_node(root, 18);
     print();
     cout << "\n\n\n";
 
-    cout << "Удаляем элемент 8 (корень):" << endl;
-    delete_node(8);
+    cout << "Удаляем элемент 30:" << endl;
+    delete_node(root, 30);
     print();
     cout << "\n\n\n";
     return 0;
