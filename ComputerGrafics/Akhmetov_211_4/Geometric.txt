@@ -1,0 +1,374 @@
+frame 20 10
+
+# СНЕГОВИК - зеленый 
+model 5 8 10 16	
+color 0 255 0
+thickness 2
+path 17
+5 15
+7 14.5
+8 14
+7.5 13
+8.5 13
+8.5 12
+7.5 11.5
+7 12
+7.5 12
+8 12.5
+7.5 13
+7 12
+7 11.5
+7.5 10.5
+7.5 9.5
+6.5 9
+6 9
+path 7
+4.25 9
+4 9
+3.5 9.5
+3 10.5
+3.5 11.5
+4.5 12
+7 11.5
+path 4
+4.5 12
+4.583 12.5
+7 12
+4.583 12.5
+path 2
+4.583 12.5
+5 15
+color 0 0 0
+thickness 2
+path 3
+4.5 11.5
+4 11
+5 11
+path 2
+4.5 11.5
+5 11
+path 4
+5.5 11
+6.5 11
+6 11.5
+5.5 11
+color 0 0 0
+thickness 2
+path 2
+3.5 10
+4.5 9
+path 2
+4.5 9
+5.5 9
+path 4
+5.5 9
+6 10
+5 9.5
+4 9.5
+path 2
+6 10
+6.5 10.5
+path 2
+6.5 10.5
+6.25 10.75
+path 2
+6.5 10.5
+6.75 10.25
+color 255 192 203
+thickness 2
+path 5
+2.5 10.5
+4.5 10
+5 10.5
+4.5 11
+2.5 10.5
+color 160 82 45
+thickness 3
+path 2
+1 14.5
+3.5 14.5
+path 2
+3.5 14.5
+3 12
+path 2
+3 12
+1.5 12
+path 2
+1.5 12
+2 11.5
+path 2
+3 12
+3 14.5
+path 2
+2.5 14.5
+2.5 12
+path 2
+2 12
+2 14.5
+path 3
+3 12
+2.5 11.5
+2.5 9
+path 2
+2.5 9
+2 9
+path 2
+2 9
+2 11.5
+path 2
+2 7.5
+2 1
+path 2
+2 1
+2.5 1
+path 2
+2.5 1
+2.5 7.5
+path 2
+1.5 14.5
+1.5 12
+path 2
+1.5 12
+1 14.5
+color 255 255 255
+thickness 3
+path 12
+2.5 1.5
+3.5 1
+7 1
+8 1.5
+9 2.5
+9 4
+8.5 5.5
+7.5 6.5
+6 7
+4.5 7
+3 6.5
+2.5 6
+path 4
+2 5.5
+1.5 4
+1.5 2.5
+2 2
+color 0 0 255
+thickness 3
+path 3
+2.5 3
+3 3.5
+3 4
+path 3
+3 4
+2.5 3.5
+2.5 3
+path 4
+3 5
+3.5 5.5
+3.5 6
+3 5.5
+path 2
+3 5.5
+3 5
+path 5
+4 8.5
+4 8
+3.5 7.5
+3.5 8
+4 8.5
+color 255 255 255
+thickness 3
+path 9
+6.5 9
+7.5 8.5
+7.5 7.5
+8 7
+8.5 7
+9 7.5
+9 8
+8.5 8.5
+8 8.5
+path 2
+8 8.5
+7.5 8
+path 2
+8 7
+7.5 6.5
+color 255 255 255
+thickness 3
+path 4
+4 9
+3 8.5
+2.5 7.5
+2.5 7
+path 2
+2.5 7
+3 6.5
+path 4
+3 8.5
+2.5 9
+2 9
+1.5 8.5
+path 2
+1.5 8.5
+1.5 8
+path 2
+1.5 8
+2 7.5
+path 2
+2 7.5
+2.5 7.5
+
+pushTransform
+scale 1
+
+# Маленький зеленый (правый, на расстоянии 2)
+pushTransform
+translate 12 8
+figure
+popTransform
+
+# Зеленый (правый, 18, 2)
+pushTransform
+translate 18 2
+figure
+popTransform
+
+popTransform
+
+pushTransform
+scale 2
+
+# ===== 1-й (9 часов, зеленый) =====
+pushTransform
+translate 6 0 
+rotate 180
+translate 10 8
+figure
+popTransform
+
+# ===== 2-й (левый-нижний, зеленый) =====
+pushTransform
+translate 6 0 
+rotate 240
+translate 10 8
+figure
+popTransform
+
+popTransform
+
+# ===== СИНИЙ ПРЯМОУГОЛЬНИК Кроль =====
+model 4.25 4.25 8.5 8.5
+color 255 0 0
+thickness 2
+path 23
+0.5 3.
+1. 4.5
+0.5 6.
+0.5 7.5
+1. 8.
+1.5 8.
+2. 7.5
+1.5 6.
+1.5 4.5
+3. 4.5
+3. 6.
+2.5 7.5
+3. 8.
+3.5 8.
+4. 7.5
+4. 6.
+3.5 4.5
+4. 3.
+3.5 1.5
+2.5 1.
+2. 1.
+1. 1.5
+0.5 3.
+color 120 120 120
+thickness 3
+path 22
+4. 3.
+5.5 3.5
+7. 3.5
+7.5 2.5
+8. 2.5
+8. 2.
+7.5 2.
+7.5 0.5
+6.5 0.5
+6.5 1.
+6. 1.
+6. 0.5
+5. 0.5
+5. 1.
+4. 1.
+4. 0.5
+3. 0.5
+3. 1.
+2.5 1.
+2.5 0.5
+1.5 0.5
+1.5 1.25
+color 0 255 0
+thickness 4
+path 5
+1.5 3.5
+1.5 3.
+2. 3.
+2. 3.5
+1.5 3.5
+path 5
+2.5 3.5
+2.5 3.
+3. 3.
+3. 3.5
+2.5 3.5
+color 0 0 0
+thickness 2
+path 2
+1. 5.5
+1. 7.
+path 2
+3.5 5.5
+3.5 7.
+color 0 0 255
+thickness 3
+path 4
+2. 2.5
+2.5 2.5
+2.25 2.
+2. 2.5
+
+# Маленький синий (левый, на расстоянии 2)
+pushTransform
+translate 8 8
+scale 1
+figure
+popTransform
+
+# Синий (левый, 0, 2)
+pushTransform
+translate 2 2
+scale 1
+figure
+popTransform
+
+pushTransform
+scale 2
+
+# ===== 3-й (правый-нижний, синий) =====
+pushTransform
+translate 6 0
+rotate 300
+translate 10 8
+figure
+popTransform
+
+# ===== 4-й (3 часа, синий) =====
+pushTransform
+translate 6 0
+rotate 0
+translate 10 8
+figure
+popTransform
+
+popTransform
